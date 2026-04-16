@@ -1,3 +1,8 @@
+/*
+Bon dans app.js sert a lancer le express serveur en a utiliser la dependance express.
+Ensuite en a installer nodemon, le but c'est que a chaque modeifications dans un fichier pas besoin de relancer le serveur
+Apres en a fait appele au routes (j'ai regarder une video pour mieux comprendre)
+ */
 const express = require('express');
 const app = express();
 const port = 8080

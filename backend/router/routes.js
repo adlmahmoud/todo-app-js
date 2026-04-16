@@ -1,3 +1,10 @@
+/*
+Le bute de ./router/reoutes.js c'est de creer des routes pour le serveur
+creer un get pour recuperer les donnees l'api localhost:8080 dans postman
+creer un post pour pouvoir modifier,creer les donner
+creer un put pour mettre ajour les donnees
+creer un delete pour supprimer les donnees
+ */
 const express = require('express');
 const {setPost} = require("../controller/controller.get.new.tache");
 const router = express.Router();
