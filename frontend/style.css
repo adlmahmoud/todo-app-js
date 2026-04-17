@@ -1,0 +1,67 @@
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding-top: 80px;
+    margin: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+}
+
+h1 {
+    font-weight: 300;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+input {
+    flex: 1;
+    padding: 12px;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    color: #fff;
+    outline: none;
+}
+
+input:focus {
+    border-color: #555;
+}
+
+button {
+    padding: 12px 20px;
+    background: #2a2a2a;
+    border: 1px solid #333;
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #444;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background: #1e1e1e;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-left: 4px solid #4CAF50; /* Petite touche de couleur pour indiquer le statut */
+    display: flex;
+    justify-content: space-between;
+}
