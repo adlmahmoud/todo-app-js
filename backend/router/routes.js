@@ -9,8 +9,14 @@ const express = require('express');
 const {setPost} = require("../controller/controller.get.new.tache");
 const router = express.Router();
 
-router.get("/",(req,res)=>{
-    res.json({msg:"Tache ajouter"})
+router.get("/", (req, res) => {
+    try {
+        const data = fs.readFileSync(path, "utf8");
+        const todolist = JSON.parse(data);
+        res.status(200).json(todolist);
+    } catch (error) {
+        res.status(500).json({ erreur: "Impossible de lire les tâches" });
+    }
 });
 
 // ajouter une tache
