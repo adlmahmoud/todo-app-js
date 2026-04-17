@@ -18,7 +18,7 @@ router.post("/",setPost);
 router.put("/:id",(req,res)=>{
     res.json({messageId : req.params.id});
 })
-// suprimer
+// supprimer
 router.delete("/:id",(req,res)=>{
     res.json({message :"Tache supp" + req.params.id});
 })
