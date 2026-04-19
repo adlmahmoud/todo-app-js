@@ -1,67 +1,153 @@
-body {
-    background-color: #121212;
-    color: #e0e0e0;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    padding-top: 80px;
-    margin: 0;
+/* --- Variables de couleurs Invincible --- */
+:root {
+    --inv-yellow: #FFD700;
+    --inv-blue: #0052CC;
+    --inv-red: #D90429;
+    --inv-black: #1A1A1A;
+    --inv-white: #F8F9FA;
 }
 
-.container {
+body {
+    /* Effet "Halftone" (trame de points) pour le fond de la page */
+    background-image: radial-gradient(var(--inv-black) 10%, transparent 11%);
+    background-size: 10px 10px;
+    background-color: var(--inv-yellow);
+    font-family: 'Comic Neue', cursive;
+    color: var(--inv-black);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* La page de comics qui contient tout */
+.comic-page {
     width: 100%;
-    max-width: 450px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Le style "Case de BD" commun à tous les blocs */
+.panel {
+    background-color: var(--inv-white);
+    border: 4px solid var(--inv-black);
+    /* Ombre solide noire typique du style brutaliste/comic */
+    box-shadow: 8px 8px 0px var(--inv-black);
+    padding: 20px;
+    position: relative;
 }
 
 h1 {
-    font-weight: 300;
-    letter-spacing: 2px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    margin: 0;
+    text-transform: uppercase;
+    color: var(--inv-blue);
+    text-shadow: 2px 2px 0px var(--inv-black);
+    text-align: center;
 }
 
 .input-group {
     display: flex;
-    margin-bottom: 30px;
+    gap: 10px;
 }
 
 input {
-    flex: 1;
-    padding: 12px;
-    background: #1e1e1e;
-    border: 1px solid #333;
-    color: #fff;
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1.2rem;
+    font-family: 'Comic Neue', cursive;
+    border: 3px solid var(--inv-black);
     outline: none;
 }
 
 input:focus {
-    border-color: #555;
+    background-color: #fffde7;
 }
 
 button {
-    padding: 12px 20px;
-    background: #2a2a2a;
-    border: 1px solid #333;
-    color: #e0e0e0;
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    background-color: var(--inv-blue);
+    color: var(--inv-white);
+    border: 3px solid var(--inv-black);
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: transform 0.1s;
+    text-transform: uppercase;
 }
 
-button:hover {
-    background: #444;
+button:active {
+    transform: translate(4px, 4px); /* Simule l'enfoncement du bouton physique */
+}
+
+/* Boutons d'action pour le CRUD */
+.btn-delete {
+    background-color: var(--inv-red);
+    font-size: 1rem;
+    padding: 5px 10px;
+}
+
+.btn-edit {
+    background-color: var(--inv-yellow);
+    color: var(--inv-black);
+    font-size: 1rem;
+    padding: 5px 10px;
 }
 
 ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 li {
-    background: #1e1e1e;
-    margin-bottom: 10px;
-    padding: 15px;
-    border-left: 4px solid #4CAF50; /* Petite touche de couleur pour indiquer le statut */
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-bottom: 3px dashed var(--inv-black);
+    padding: 15px 0;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* L'animation d'impact lors de la suppression */
+.impact-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-family: 'Bangers', cursive;
+    color: var(--inv-red);
+    font-size: 4rem;
+    text-shadow: 3px 3px 0px var(--inv-black), -2px -2px 0px var(--inv-white);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.shake {
+    animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+    40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+.hidden {
+    display: none;
+}
+
+#error-message {
+    background-color: var(--inv-red);
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border: 2px solid black;
+    font-family: 'Bangers', cursive;
 }

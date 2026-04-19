@@ -11,33 +11,33 @@ Se que je doit poser comme questions pour Vigoat:
  */
 // Utiliser la dependance fs
 const fs = require("fs");
-const path = "./todolist.json";
+const path = require("path");
+const fichierJSON = path.join(__dirname, "todolist.json");  //declarer le fichierjson
 
-// La fonctions setPost pour ajouter du contenue dans todolist.json
 module.exports.setPost = (req, res) => {
-    // gerer l'erreur
+
+    // Gestions de l'erreurs tkt Vigoat
     if (!req.body.message) {
-        return res.status(400).json({ message: "Veuillez fournir un message" });
+        return res.status(400).json({ erreur: "Veuillez fournir un message" });
     }
-    // try catch pour gerer les erreurs tkt Vito j'essaye de gerer les erreures
+
     try {
-        // Lire le fichier todolist.json avec la fonctions readFileSync qui est deja async
-        const data = fs.readFileSync(path, "utf8");
-        // Traduire le fichier json pour ajouter les donnees facilement
+        const data = fs.readFileSync(fichierJSON, "utf8");
+        // convertir le fichier json
         const todolist = JSON.parse(data);
-        // declarer le models si j'ai bien compris j'ai utiliser une doc
+
         const nouvelleTache = {
             id: Date.now(),
             message: req.body.message,
             terminee: false
         };
-        // Push le model dans le fichier json
+
         todolist.push(nouvelleTache);
-        // Ecrire a la fin du fichier json se que l'utilisateur a rajouter
-        fs.writeFileSync(path, JSON.stringify(todolist, null, 2));
-        // retourner le 200 OK
+
+        fs.writeFileSync(fichierJSON, JSON.stringify(todolist, null, 2));
+
         return res.status(201).json({ message: "Succès", tache: nouvelleTache });
-      // catch l'erreur
+
     } catch (error) {
         return res.status(500).json({ erreur: "Erreur serveur" });
     }

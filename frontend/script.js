@@ -1,64 +1,153 @@
-// On pointe vers l'URL exacte que nous avons configurée dans ton backend
 const API_URL = "http://localhost:8080/router";
 
-// On récupère nos éléments HTML
 const listElement = document.getElementById("todo-list");
 const inputElement = document.getElementById("tache-input");
 const btnElement = document.getElementById("add-btn");
+const errorElement = document.getElementById("error-message");
 
-// 1. LIRE LES DONNÉES (Méthode GET)
+// Fonction utilitaire pour afficher les erreurs (Etape 6 du TP)
+function showError(message) {
+    errorElement.textContent = "Erreur fatale : " + message;
+    errorElement.classList.remove("hidden");
+    setTimeout(() => errorElement.classList.add("hidden"), 5000);
+}
+
 async function fetchTaches() {
     try {
-        // fetch lance par défaut une requête GET
         const response = await fetch(API_URL);
-        const taches = await response.json();
+        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
 
-        // On vide la liste actuelle avant de la re-remplir
+        const taches = await response.json();
         listElement.innerHTML = "";
 
-        // Si ton backend renvoie bien un tableau, on boucle dessus
         if (Array.isArray(taches)) {
             taches.forEach(tache => {
                 const li = document.createElement("li");
-                li.textContent = tache.message;
+                li.id = `tache-${tache.id}`; // IMPORTANT: Il faut un ID pour le PUT/DELETE
+
+                const spanText = document.createElement("span");
+                spanText.textContent = tache.message;
+
+                const actionDiv = document.createElement("div");
+
+                // Bouton Modifier (PUT)
+                const editBtn = document.createElement("button");
+                editBtn.textContent = "EDIT";
+                editBtn.className = "btn-edit";
+                editBtn.onclick = () => modifierTache(tache.id, tache.message);
+
+                // Bouton Supprimer (DELETE)
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "BAM!";
+                deleteBtn.className = "btn-delete";
+                deleteBtn.onclick = (e) => animerEtSupprimer(tache.id, li);
+
+                actionDiv.appendChild(editBtn);
+                actionDiv.appendChild(deleteBtn);
+
+                li.appendChild(spanText);
+                li.appendChild(actionDiv);
                 listElement.appendChild(li);
             });
         }
     } catch (error) {
-        console.error("Erreur lors de la récupération :", error);
+        showError("Impossible de charger les missions.");
+        console.error(error);
     }
 }
 
-// 2. ENVOYER DES DONNÉES (Méthode POST)
 async function ajouterTache() {
-    const message = inputElement.value;
-
-    // On ne fait rien si le champ est vide
+    const message = inputElement.value.trim();
     if (!message) return;
 
     try {
-        // Pour un POST, on doit spécifier la méthode, les headers (pour dire qu'on envoie du JSON), et le body
         const response = await fetch(API_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ message: message }) // On transforme notre objet JS en texte JSON
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
         });
 
         if (response.status === 201) {
-            inputElement.value = ""; // On vide le champ
-            fetchTaches(); // On rafraîchit la liste pour voir la nouvelle tâche
+            inputElement.value = "";
+            fetchTaches(); // On rafraîchit la liste
         } else {
-            console.error("Erreur serveur : Le backend n'a pas renvoyé le statut 201");
+            showError("Le serveur a rejeté la mission.");
         }
     } catch (error) {
-        console.error("Erreur lors de l'envoi :", error);
+        showError("Le serveur ne répond pas.");
     }
 }
 
-// 3. ÉCOUTER LE CLIC SUR LE BOUTON
-btnElement.addEventListener("click", ajouterTache);
+// L'animation JS de l'univers Invincible
+function animerEtSupprimer(id, elementLi) {
+    // 1. On secoue violemment l'élément
+    elementLi.classList.add("shake");
 
-// 4. CHARGER LA LISTE AU DÉMARRAGE
+    // 2. On crée le texte d'impact
+    const impact = document.createElement("div");
+    impact.textContent = "SPLAASH!";
+    impact.className = "impact-text";
+    elementLi.appendChild(impact);
+
+    // 3. On anime le texte avec l'API Web Animations native de JS
+    impact.animate([
+        { transform: 'translate(-50%, -50%) scale(0)' },
+        { transform: 'translate(-50%, -50%) scale(1.5)' }
+    ], {
+        duration: 200,
+        fill: 'forwards'
+    });
+
+    // 4. Après l'animation, on lance la vraie suppression backend
+    setTimeout(() => {
+        supprimerTache(id);
+    }, 400); // On attend la fin du "shake"
+}
+
+// Fonction DELETE pour valider le TP
+async function supprimerTache(id) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
+        if (response.ok) {
+            fetchTaches();
+        } else {
+            showError("Impossible d'éliminer la cible.");
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Fonction PUT pour valider le TP
+async function modifierTache(id, ancienMessage) {
+    const nouveauMessage = prompt("Modifier la mission :", ancienMessage);
+    if (!nouveauMessage || nouveauMessage === ancienMessage) return;
+
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: nouveauMessage })
+        });
+        if (response.ok) {
+            fetchTaches();
+        } else {
+            showError("Mise à jour échouée.");
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+btnElement.addEventListener("click", ajouterTache);
+// Permettre de valider avec la touche Entrée
+inputElement.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        ajouterTache();
+    }
+});
+
 fetchTaches();
